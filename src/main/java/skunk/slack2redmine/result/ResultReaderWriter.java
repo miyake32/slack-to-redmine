@@ -53,7 +53,7 @@ public class ResultReaderWriter {
 
 	public void write(Collection<TicketCreationResult> results) throws IOException {
 		if (Objects.isNull(resultSet)) {
-			throw new IllegalStateException("method was called before result set had been read");
+			read();
 		}
 		File file = new File(filePath);
 		if (!file.exists()) {
@@ -76,9 +76,9 @@ public class ResultReaderWriter {
 		}
 	}
 
-	public boolean isExistInResult(SlackSourceType type, String id) {
+	public boolean isExistInResult(SlackSourceType type, String id) throws IOException {
 		if (Objects.isNull(resultSet)) {
-			throw new IllegalStateException("method was called before result set had been read");
+			read();
 		}
 		TicketCreationResult test = new TicketCreationResult();
 		test.setSourceType(type);

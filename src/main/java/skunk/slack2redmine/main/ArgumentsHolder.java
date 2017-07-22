@@ -16,6 +16,7 @@ public class ArgumentsHolder {
 	private static Set<String> slackChannels = new HashSet<>();
 	private static String ruleFile;
 	private static String resultFile;
+	private static boolean dryRun = false;
 
 	public enum RedmineAuthMethod {
 		NONE, USER_PASSWORD, API_TOKEN;
@@ -24,6 +25,9 @@ public class ArgumentsHolder {
 	public static void readArgs(String[] args) {
 		for (int i = 0; i < args.length; i++) {
 			switch (args[i]) {
+			case "--dry-run":
+				dryRun = true;
+				break;
 			case "-s":
 			case "--slack-token":
 				log.info("read slack-token");
@@ -92,7 +96,6 @@ public class ArgumentsHolder {
 				break;
 			default:
 				slackChannels.add(args[i]);
-				i++;
 				break;
 			}
 		}
@@ -166,5 +169,9 @@ public class ArgumentsHolder {
 
 	public static String getResultFile() {
 		return resultFile;
+	}
+	
+	public static boolean isDryRun() {
+		return dryRun;
 	}
 }

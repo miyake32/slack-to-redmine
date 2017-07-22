@@ -44,6 +44,9 @@ public class MessageRetriever implements SlackSourceRetriever {
 					.channelsHistory(
 							ChannelsHistoryRequest.builder().channel(channel.getId()).token(token).count(1000).build())
 					.getMessages();
+			if (Objects.isNull(messages)) {
+				continue;
+			}
 			ret.addAll(messages);
 		}
 		return ret;

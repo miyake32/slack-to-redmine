@@ -1,6 +1,8 @@
 package skunk.slack2redmine.slack;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -50,6 +52,9 @@ public class TextFileRetriever implements SlackSourceRetriever {
 			log.info("retrieve files from {}", channel);
 			List<File> files = slack.methods()
 					.filesList(FilesListRequest.builder().token(token).channel(channel.getId()).build()).getFiles();
+			if (Objects.isNull(files)) {
+				continue;
+			}
 			ret.addAll(files);
 		}
 		return ret;
@@ -67,7 +72,7 @@ public class TextFileRetriever implements SlackSourceRetriever {
 
 			try (CloseableHttpResponse res = client.execute(req)) {
 				HttpEntity entity = res.getEntity();
-				String content = EntityUtils.toString(entity);
+				String content = EntityUtils.toString(entity, StandardCharsets.UTF_8);
 				return new TextFile(file, content);
 			} catch (Exception e) {
 				log.error("failed to download from {}", url, e);

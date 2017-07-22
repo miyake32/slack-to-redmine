@@ -28,7 +28,7 @@ import skunk.slack2redmine.slack.model.type.SlackSourceType;
 
 @Slf4j
 public class Slack2Redmine {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		ArgumentsHolder.readArgs(args);
 
 		ResultReaderWriter result = new ResultReaderWriter(ArgumentsHolder.getResultFile());
@@ -71,41 +71,55 @@ public class Slack2Redmine {
 			if (Objects.isNull(ticket)) {
 				continue;
 			}
-			TicketCreationResult creationResult = new TicketCreationResult();
 
+			TicketCreationResult creationResult = new TicketCreationResult();
 			creationResult.setCreatedDateTime();
 			creationResult.setSourceType(source.getType());
 			creationResult.setSourceId(source.getId());
-			Issue registeredTicket = null;
-			try {
-				registeredTicket = ticketRegister.register(ticket);
-			} catch (RedmineException e) {
-				log.error("exception occurred while registering ticket {}", ticket, e);
-				System.exit(3);
-			}
-			creationResult.setTicketNo(registeredTicket.getId());
 
-			try {
-				result.write(creationResult);
-			} catch (IOException e) {
-				log.error("exception occurred while writing results {}", creationResult, e);
-				System.exit(4);
+			if (ArgumentsHolder.isDryRun()) {
+				log.info(ticket.toString());
+				creationResult.setTicketNo(-1);
+			} else {
+				Issue registeredTicket = null;
+				try {
+					registeredTicket = ticketRegister.register(ticket);
+				} catch (RedmineException e) {
+					log.error("exception occurred while registering ticket {}", ticket, e);
+					System.exit(3);
+				}
+				creationResult.setTicketNo(registeredTicket.getId());
 			}
 
+			if (ArgumentsHolder.isDryRun()) {
+				log.info(creationResult.toString());
+			} else {
+				try {
+					result.write(creationResult);
+				} catch (IOException e) {
+					log.error("exception occurred while writing results {}", creationResult, e);
+					System.exit(4);
+				}
+			}
 			StringBuilder message = new StringBuilder();
-			message.append("created ticket. ");
+			message.append("created ticket ");
 			message.append(ArgumentsHolder.getRedmineUrl());
 			if (!ArgumentsHolder.getRedmineUrl().endsWith("/")) {
 				message.append("/");
 			}
 			message.append("issues/");
-			message.append(registeredTicket.getId());
-			try {
-				messageAppender.appendMessage(source, message.toString());
-			} catch (IOException | SlackApiException e) {
-				log.error("exception occurred while sending message [sourceType:{},sourceId:{},message:{}]",
-						source.getType().toString(), source.getId(), message.toString());
-				System.exit(5);
+			message.append(creationResult.getTicketNo());
+
+			if (ArgumentsHolder.isDryRun()) {
+				log.info("Message: {}", message.toString());
+			} else {
+				try {
+					messageAppender.appendMessage(source, message.toString());
+				} catch (IOException | SlackApiException e) {
+					log.error("exception occurred while sending message [sourceType:{},sourceId:{},message:{}]",
+							source.getType().toString(), source.getId(), message.toString());
+					System.exit(5);
+				}
 			}
 		}
 	}
