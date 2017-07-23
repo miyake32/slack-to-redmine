@@ -1,4 +1,4 @@
-package skunk.slack2redmine.result;
+package skunk.slack2redmine.rule.result;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,7 +14,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import lombok.extern.slf4j.Slf4j;
-import skunk.slack2redmine.result.model.TicketCreationResult;
+import skunk.slack2redmine.rule.result.model.TicketCreationResult;
 import skunk.slack2redmine.slack.model.type.SlackSourceType;
 
 @Slf4j

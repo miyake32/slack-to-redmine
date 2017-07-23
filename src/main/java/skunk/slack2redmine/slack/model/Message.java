@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import skunk.slack2redmine.slack.model.type.SlackSourceType;
 
 @AllArgsConstructor
-public class Message implements SlackSource {
+public class Message extends SlackSource {
 	private com.github.seratch.jslack.api.model.Message message;
 
 	@Override
@@ -34,5 +34,10 @@ public class Message implements SlackSource {
 	
 	public com.github.seratch.jslack.api.model.Message get() {
 		return message;
+	}
+
+	@Override
+	public String getSourceUrl() {
+		throw new UnsupportedOperationException("Message#getSourceUrl is prohibited");
 	}
 }

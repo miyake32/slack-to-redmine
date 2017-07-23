@@ -1,4 +1,4 @@
-package skunk.slack2redmine.result.model;
+package skunk.slack2redmine.rule.result.model;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -24,16 +24,7 @@ public class TicketCreationResult {
 		StringBuilder sb = new StringBuilder();
 		sb.append(createdDateTime.format(DateTimeFormatter.ISO_DATE_TIME));
 		sb.append('\t');
-		switch (sourceType) {
-		case FILE:
-			sb.append("FILE");
-			break;
-		case MESSAGE:
-			sb.append("MESSAGE");
-			break;
-		default:
-			throw new IllegalStateException("invalid souceType");
-		}
+		sb.append(sourceType.toString());
 		sb.append('\t');
 		sb.append(sourceId);
 		sb.append('\t');
@@ -48,12 +39,7 @@ public class TicketCreationResult {
 		ret.setCreatedDateTime(LocalDateTime.parse(values[0], DateTimeFormatter.ISO_DATE_TIME));
 
 		String sourceTypeStr = values[1];
-		SlackSourceType sourceType = null;
-		if (sourceTypeStr.equals("FILE")) {
-			sourceType = SlackSourceType.FILE;
-		} else if (sourceTypeStr.equals("MESSAGE")) {
-			sourceType = SlackSourceType.MESSAGE;
-		}
+		SlackSourceType sourceType = SlackSourceType.of(sourceTypeStr);
 		Objects.requireNonNull(sourceType, "source type in result is null");
 		ret.setSourceType(sourceType);
 

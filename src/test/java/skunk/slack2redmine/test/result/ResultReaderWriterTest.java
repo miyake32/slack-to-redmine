@@ -7,8 +7,8 @@ import java.util.Arrays;
 import org.junit.Assert;
 import org.junit.Test;
 
-import skunk.slack2redmine.result.ResultReaderWriter;
-import skunk.slack2redmine.result.model.TicketCreationResult;
+import skunk.slack2redmine.rule.result.ResultReaderWriter;
+import skunk.slack2redmine.rule.result.model.TicketCreationResult;
 import skunk.slack2redmine.slack.model.type.SlackSourceType;
 
 public class ResultReaderWriterTest {

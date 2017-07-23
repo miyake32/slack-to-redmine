@@ -17,6 +17,7 @@ public class ArgumentsHolder {
 	private static String ruleFile;
 	private static String resultFile;
 	private static boolean dryRun = false;
+	private static boolean baseline = false;
 
 	public enum RedmineAuthMethod {
 		NONE, USER_PASSWORD, API_TOKEN;
@@ -25,6 +26,9 @@ public class ArgumentsHolder {
 	public static void readArgs(String[] args) {
 		for (int i = 0; i < args.length; i++) {
 			switch (args[i]) {
+			case "--baseline":
+				baseline = true;
+				break;
 			case "--dry-run":
 				dryRun = true;
 				break;
@@ -170,8 +174,12 @@ public class ArgumentsHolder {
 	public static String getResultFile() {
 		return resultFile;
 	}
-	
+
 	public static boolean isDryRun() {
 		return dryRun;
+	}
+	
+	public static boolean creatingBaseline() {
+		return baseline;
 	}
 }

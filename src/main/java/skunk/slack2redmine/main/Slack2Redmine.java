@@ -15,11 +15,11 @@ import com.taskadapter.redmineapi.bean.Issue;
 import lombok.extern.slf4j.Slf4j;
 import skunk.slack2redmine.redmine.TicketRegister;
 import skunk.slack2redmine.redmine.model.TicketVo;
-import skunk.slack2redmine.result.ResultReaderWriter;
-import skunk.slack2redmine.result.model.TicketCreationResult;
 import skunk.slack2redmine.rule.execute.TicketCreator;
 import skunk.slack2redmine.rule.model.TicketCreationRule;
 import skunk.slack2redmine.rule.parse.RuleYamlParser;
+import skunk.slack2redmine.rule.result.ResultReaderWriter;
+import skunk.slack2redmine.rule.result.model.TicketCreationResult;
 import skunk.slack2redmine.slack.MessageAppender;
 import skunk.slack2redmine.slack.MessageRetriever;
 import skunk.slack2redmine.slack.TextFileRetriever;
@@ -77,7 +77,7 @@ public class Slack2Redmine {
 			creationResult.setSourceType(source.getType());
 			creationResult.setSourceId(source.getId());
 
-			if (ArgumentsHolder.isDryRun()) {
+			if (ArgumentsHolder.isDryRun() || ArgumentsHolder.creatingBaseline()) {
 				log.info(ticket.toString());
 				creationResult.setTicketNo(-1);
 			} else {
@@ -110,7 +110,7 @@ public class Slack2Redmine {
 			message.append("issues/");
 			message.append(creationResult.getTicketNo());
 
-			if (ArgumentsHolder.isDryRun()) {
+			if (ArgumentsHolder.isDryRun() || ArgumentsHolder.creatingBaseline()) {
 				log.info("Message: {}", message.toString());
 			} else {
 				try {

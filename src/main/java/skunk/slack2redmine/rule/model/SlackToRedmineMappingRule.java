@@ -25,7 +25,9 @@ public class SlackToRedmineMappingRule {
 	public boolean isValid(SlackSourceType type) {
 		Objects.requireNonNull(type);
 		if (type != SlackSourceType.FILE && source == SlackSourceField.FILENAME) {
-			return false;
+			if (source == SlackSourceField.FILENAME || source == SlackSourceField.SOURCE_URL) {
+				return false;
+			}
 		}
 		if (this.type == SlackToRedmineMappingType.FIXED_TEXT) {
 			return Objects.nonNull(text) && !text.isEmpty() && Objects.nonNull(destination);

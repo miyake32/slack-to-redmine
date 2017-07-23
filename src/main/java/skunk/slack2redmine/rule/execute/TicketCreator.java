@@ -36,20 +36,9 @@ public class TicketCreator {
 	private static boolean test(SlackSource source, TicketCreationRule rule) {
 		Set<SlackSourceCondition> conditions = rule.getSlackSourceConditions();
 		for (SlackSourceCondition condition : conditions) {
-			boolean isConditionMatched = false;
 			Pattern regex = Pattern.compile(condition.getRegex());
-
-			switch (condition.getField()) {
-			case CONTENT:
-				isConditionMatched = regex.matcher(source.getContent()).find();
-				break;
-			case FILENAME:
-				isConditionMatched = regex.matcher(source.getFileName()).find();
-				break;
-			case USER:
-				isConditionMatched = regex.matcher(source.getUser()).find();
-				break;
-			}
+			boolean isConditionMatched = regex.matcher(source.get(condition.getField())).find();
+			
 			if (!isConditionMatched) {
 				return false;
 			}
@@ -77,17 +66,7 @@ public class TicketCreator {
 				fieldValueBuilder = notes;
 			}
 			if (Objects.nonNull(mappingRule.getSource())) {
-				switch (mappingRule.getSource()) {
-				case CONTENT:
-					sourceText = source.getContent();
-					break;
-				case FILENAME:
-					sourceText = source.getFileName();
-					break;
-				case USER:
-					sourceText = source.getUser();
-					break;
-				}
+				sourceText = source.get(mappingRule.getSource());
 			}
 
 			appendFieldValue(fieldValueBuilder, mappingRule, sourceText);

@@ -82,14 +82,7 @@ public class RuleYamlParser {
 	private static SlackSourceCondition createConditionFrom(Map map) {
 		// field cannot be null
 		String fieldStr = (String) map.get("field");
-		SlackSourceField field = null;
-		if (fieldStr.equalsIgnoreCase("content")) {
-			field = SlackSourceField.CONTENT;
-		} else if (fieldStr.equalsIgnoreCase("user")) {
-			field = SlackSourceField.USER;
-		} else if (fieldStr.equalsIgnoreCase("filename")) {
-			field = SlackSourceField.FILENAME;
-		}
+		SlackSourceField field = SlackSourceField.of(fieldStr);
 		Objects.requireNonNull(field, "field in condition cannot be null");
 
 		// tracker cannot be null
@@ -103,12 +96,7 @@ public class RuleYamlParser {
 	private static SlackToRedmineMappingRule createMappingRuleFrom(Map map) {
 		// type cannot be null
 		String typeStr = (String) map.get("type");
-		SlackToRedmineMappingType type = null;
-		if (typeStr.equalsIgnoreCase("fixed_text") || typeStr.equalsIgnoreCase("fixedtext")) {
-			type = SlackToRedmineMappingType.FIXED_TEXT;
-		} else if (typeStr.equalsIgnoreCase("regex_match") || typeStr.equalsIgnoreCase("regexmatch")) {
-			type = SlackToRedmineMappingType.REGEX_MATCH;
-		}
+		SlackToRedmineMappingType type = SlackToRedmineMappingType.of(typeStr);
 		Objects.requireNonNull(type, "type of mapping cannot be null");
 
 		// regex can be null
@@ -119,27 +107,11 @@ public class RuleYamlParser {
 
 		// source can be null
 		String sourceStr = (String) map.get("srcField");
-		SlackSourceField source = null;
-		if (Objects.nonNull(sourceStr)) {
-			if (sourceStr.equalsIgnoreCase("content")) {
-				source = SlackSourceField.CONTENT;
-			} else if (sourceStr.equalsIgnoreCase("user")) {
-				source = SlackSourceField.USER;
-			} else if (sourceStr.equalsIgnoreCase("filename")) {
-				source = SlackSourceField.FILENAME;
-			}
-		}
+		SlackSourceField source = SlackSourceField.of(sourceStr);
 		
 		// destination cannot be null
 		String destinationStr = (String) map.get("destField");
-		RedmineTicketField destination = null;
-		if (destinationStr.equalsIgnoreCase("subject")) {
-			destination = RedmineTicketField.SUBJECT;
-		} else if (destinationStr.equalsIgnoreCase("description")) {
-			destination = RedmineTicketField.DESCRIPTION;
-		} else if (destinationStr.equalsIgnoreCase("notes")) {
-			destination = RedmineTicketField.NOTES;
-		}
+		RedmineTicketField destination = RedmineTicketField.of(destinationStr);
 		Objects.requireNonNull(destination, "destField in mapping cannot be null");
 
 		return new SlackToRedmineMappingRule(type, regex, text, source, destination);
