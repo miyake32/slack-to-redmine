@@ -13,18 +13,21 @@ public class TextFile extends SlackSource {
 	private com.github.seratch.jslack.api.model.File file;
 	private String content;
 	private TextFileRetriever textFileRetriever;
+	private String username;
 
-	public TextFile(com.github.seratch.jslack.api.model.File file, TextFileRetriever textFileRetriever) {
+	public TextFile(com.github.seratch.jslack.api.model.File file, String username, TextFileRetriever textFileRetriever) {
 		super();
 		this.file = file;
 		this.textFileRetriever = textFileRetriever;
 		this.content = null;
+		this.username = username;
 	}
-	public TextFile(com.github.seratch.jslack.api.model.File file, String content) {
+	public TextFile(com.github.seratch.jslack.api.model.File file, String username, String content) {
 		super();
 		this.file = file;
 		this.textFileRetriever = null;
 		this.content = content;
+		this.username = username;
 	}
 	public com.github.seratch.jslack.api.model.File getFile() {
 		return file;
@@ -44,7 +47,7 @@ public class TextFile extends SlackSource {
 
 	@Override
 	public String getUser() {
-		return this.file.getUsername();
+		return username;
 	}
 
 	@Override

@@ -21,8 +21,8 @@ import skunk.slack2redmine.slack.model.type.SlackSourceType;
 
 public class TicketCreatorTest {
 	private static final SlackSource textFile = new TextFile(
-			File.builder().username("miyake_yut").filetype("text").name("sample_text_file_1")
-					.urlPrivateDownload("https://sample.download.com/download").build(),
+			File.builder().filetype("text").name("sample_text_file_1")
+					.urlPrivateDownload("https://sample.download.com/download").build(), "miyake_yut",
 			"Content of file\r\nHogeFugaError occurred while running process\r\n\r\nPlease check it.\r\nBefore HogeFugaError, SPAM happened.");
 	private static TicketCreationRule getPositiveRule1() {
 		TicketCreationRule rule = new TicketCreationRule(SlackSourceType.FILE, 999999, "Task(タスク)", "Expense Reimbursement Report Management");

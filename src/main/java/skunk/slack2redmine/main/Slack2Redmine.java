@@ -23,6 +23,7 @@ import skunk.slack2redmine.rule.result.model.TicketCreationResult;
 import skunk.slack2redmine.slack.MessageAppender;
 import skunk.slack2redmine.slack.MessageRetriever;
 import skunk.slack2redmine.slack.TextFileRetriever;
+import skunk.slack2redmine.slack.UsernameResolver;
 import skunk.slack2redmine.slack.model.SlackSource;
 import skunk.slack2redmine.slack.model.type.SlackSourceType;
 
@@ -44,9 +45,10 @@ public class Slack2Redmine {
 		MessageAppender messageAppender = new MessageAppender(ArgumentsHolder.getSlackApiToken());
 
 		Set<SlackSource> sources = new HashSet<>();
+		UsernameResolver usernameResolver = new UsernameResolver(ArgumentsHolder.getSlackApiToken());
 		if (rules.stream().filter(r -> r.getType() == SlackSourceType.FILE).findFirst().isPresent()) {
 			try {
-				sources.addAll(new TextFileRetriever(ArgumentsHolder.getSlackApiToken())
+				sources.addAll(new TextFileRetriever(ArgumentsHolder.getSlackApiToken(), usernameResolver)
 						.getSlackSources(ArgumentsHolder.getSlackChannels()));
 			} catch (IOException | SlackApiException e) {
 				log.error("failed to retrieve slack files");
@@ -55,7 +57,7 @@ public class Slack2Redmine {
 		}
 		if (rules.stream().filter(r -> r.getType() == SlackSourceType.MESSAGE).findFirst().isPresent()) {
 			try {
-				sources.addAll(new MessageRetriever(ArgumentsHolder.getSlackApiToken())
+				sources.addAll(new MessageRetriever(ArgumentsHolder.getSlackApiToken(), usernameResolver)
 						.getSlackSources(ArgumentsHolder.getSlackChannels()));
 			} catch (IOException | SlackApiException e) {
 				log.error("failed to retrieve slack messages");
@@ -102,7 +104,7 @@ public class Slack2Redmine {
 				}
 			}
 			StringBuilder message = new StringBuilder();
-			message.append("created ticket ");
+			message.append("slack2redmine created ticket ");
 			message.append(ArgumentsHolder.getRedmineUrl());
 			if (!ArgumentsHolder.getRedmineUrl().endsWith("/")) {
 				message.append("/");

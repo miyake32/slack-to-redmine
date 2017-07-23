@@ -6,6 +6,7 @@ import skunk.slack2redmine.slack.model.type.SlackSourceType;
 @AllArgsConstructor
 public class Message extends SlackSource {
 	private com.github.seratch.jslack.api.model.Message message;
+	private String userName;
 
 	@Override
 	public SlackSourceType getType() {
@@ -19,7 +20,7 @@ public class Message extends SlackSource {
 
 	@Override
 	public String getUser() {
-		return message.getUser();
+		return userName;
 	}
 
 	@Override

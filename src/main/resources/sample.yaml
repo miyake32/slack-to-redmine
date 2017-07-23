@@ -1,11 +1,11 @@
 # define redmine ticket creation rule
 # upper rules have higher priority
 - type: file # file or message
-  parentTicketNo: 999999 # parentTicketNo of the ticket can be null
+  parentTicketNo: 999999 # parentTicketNo of the ticket (optional)
   tracker: Name of Tracker of Redmine Ticket
   project: Name of Redmine Project
   conditions: # conditions to filter slack files or messages
-    - field: content # content, filename or source_url (you can use filename and source_url only when type is file)
+    - field: content # content, user, filename or source_url (you can use filename and source_url only when type is file)
       regex: '[A-Z][0-9]{8}' # specify pattern in java regex. it would be better to sorroud with ' or ".
     - field: filename
       regex: ^file.txt$
@@ -19,13 +19,13 @@
       destField: notes # subject, description or notes
     - type: fixed_text
       text: \r\n\r\nThat's all
-      destField: notes # text will be concatenated on duplicated mapping to a single field
+      destField: notes # text will be concatenated when duplicately mapped to a single field
 
 - type: message
   tracker: Name of Tracker 
   project: Name of Project
   conditions:
-    - field: user # user is not tested. maybe it doesn't work
+    - field: user
       regex: miyake_yut
   mapping:
     - type: fixed_text

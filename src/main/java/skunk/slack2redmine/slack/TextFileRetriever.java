@@ -30,14 +30,16 @@ import skunk.slack2redmine.slack.model.TextFile;
 @Slf4j
 public class TextFileRetriever implements SlackSourceRetriever {
 	private String token;
+	private UsernameResolver usernameResolver;
 
 	private TextFileRetriever() {
 		super();
 	}
 
-	public TextFileRetriever(String token) {
+	public TextFileRetriever(String token, UsernameResolver usernameResolver) {
 		this();
 		this.token = token;
+		this.usernameResolver = usernameResolver;
 	}
 
 	public Set<File> getFiles(Collection<String> channelNames) throws IOException, SlackApiException {
@@ -82,6 +84,10 @@ public class TextFileRetriever implements SlackSourceRetriever {
 	}
 
 	public List<SlackSource> getSlackSources(Collection<String> channelNames) throws IOException, SlackApiException {
-		return getFiles(channelNames).stream().map(f -> new TextFile(f, this)).collect(Collectors.toList());
+		if (!usernameResolver.isReady()) {
+			usernameResolver.retrieveUserInfo();
+		}
+		return getFiles(channelNames).stream().map(f -> new TextFile(f, usernameResolver.resolve(f.getUser()), this))
+				.collect(Collectors.toList());
 	}
 }

@@ -21,14 +21,16 @@ import skunk.slack2redmine.slack.model.SlackSource;
 @Slf4j
 public class MessageRetriever implements SlackSourceRetriever {
 	private String token;
+	private UsernameResolver usernameResolver;
 
 	private MessageRetriever() {
 		super();
 	}
 
-	public MessageRetriever(String token) {
+	public MessageRetriever(String token, UsernameResolver usernameResolver) {
 		this();
 		this.token = token;
+		this.usernameResolver = usernameResolver;
 	}
 
 	public Set<Message> getMessages(Collection<String> channelNames) throws IOException, SlackApiException {
@@ -53,11 +55,15 @@ public class MessageRetriever implements SlackSourceRetriever {
 	}
 
 	public skunk.slack2redmine.slack.model.Message wrapMessage(Message message) {
-		return new skunk.slack2redmine.slack.model.Message(message);
+		String username = usernameResolver.resolve(message.getUser());
+		return new skunk.slack2redmine.slack.model.Message(message, username);
 	}
 
 	@Override
 	public List<SlackSource> getSlackSources(Collection<String> channelNames) throws IOException, SlackApiException {
+		if (!usernameResolver.isReady()) {
+			usernameResolver.retrieveUserInfo();
+		}
 		return getMessages(channelNames).stream().map(this::wrapMessage).filter(Objects::nonNull)
 				.collect(Collectors.toList());
 	}
