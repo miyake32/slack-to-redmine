@@ -11,5 +11,5 @@ java -jar slack-to-redmine-1.0-SNAPSHOT-jar-with-dependencies.jar  --slack-token
 - `--redmine-token` : you can use `--redmine-user` and `--redmine-password` instead.
 - `--rule-file` : path to rule file, which defines slack-to-redmine mapping rules. Please refer to sample.yaml to create rule file.
 - `--result-file` : path to result file, which is used to manage processed slack messages and created ticket. always specify same result file to avoid ticket duplication.
-- `--dry-run` : *optional* use dry run mode. ticket won't be created and ticket information will be printed in log.
-- `--baseline` : *optional* only write result file and ticket won't be created. In future executions, ticket won't be created for slack messages written in result file.
+- `--dry-run` : (**optional**) use dry run mode. ticket won't be created and ticket information will be printed in log.
+- `--baseline` : (**optional**) only write result file and ticket won't be created. In future executions, ticket won't be created for slack messages written in result file.
