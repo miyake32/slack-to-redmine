@@ -124,5 +124,7 @@ public class Slack2Redmine {
 				}
 			}
 		}
+		log.info("finished.");
+		System.exit(0);
 	}
 }

@@ -56,7 +56,7 @@ public class TextFileRetriever implements SlackSourceRetriever {
 			if (Objects.isNull(files)) {
 				continue;
 			}
-			ret.addAll(files);
+			ret.addAll(files.stream().filter(f -> f.getFiletype().equals("text")).collect(Collectors.toList()));
 		}
 		return ret;
 	}
