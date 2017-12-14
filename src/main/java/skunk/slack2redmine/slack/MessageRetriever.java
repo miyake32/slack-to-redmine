@@ -49,6 +49,12 @@ public class MessageRetriever implements SlackSourceRetriever {
 			if (Objects.isNull(messages)) {
 				continue;
 			}
+			for (Message message : messages) {
+				String channelId = message.getChannel();
+				if (Objects.isNull(channelId) || channelId.isEmpty()) {
+					message.setChannel(channel.getId());
+				}
+			}
 			ret.addAll(messages);
 		}
 		return ret;
